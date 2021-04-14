@@ -17,9 +17,12 @@
 import ballerina/os;
 import ballerina/test;
 
+string slackToken = os:getEnv("SLACK_TOKEN");
+string slackUserName = os:getEnv("SLACK_USERNAME");
+
 Configuration slackConfig = {
     bearerTokenConfig: {
-        token: os:getEnv("SLACK_TOKEN")
+        token: slackToken
     }
 };
 
@@ -27,7 +30,6 @@ Client slackClient = check new (slackConfig);
 
 string channelName1 = "test-slack-connector";
 string channelName2 = "channel2";
-string userName = os:getEnv("SLACK_USERNAME");
 string fileId = "";
 string filePath = "tests/resources/test.txt";
 string threadId = "";
@@ -98,11 +100,11 @@ function testGetConversationInfo() {
 
 @test:Config {}
 function testGetUserInfo() {
-    var response = slackClient->getUserInfo(userName);
+    var response = slackClient->getUserInfo(slackUserName);
     if (response is error) {
         test:assertFail(msg = response.message());
     } else {
-        test:assertEquals(response.name, userName);
+        test:assertEquals(response.name, slackUserName);
     }
 }
 
@@ -148,7 +150,7 @@ function deleteFileAfterTest() {
 
 @test:Config {}
 function testRemoveUser() {
-    var response = slackClient->removeUserFromConversation(channelName1, userName);
+    var response = slackClient->removeUserFromConversation(channelName1, slackUserName);
     if (response is error) {
         test:assertEquals(response.toString(), "error cant_kick_self ");
     }
@@ -211,7 +213,7 @@ function testJoinConversation() {
 
 @test:Config {}
 function testListConverationsOfAUser() {
-    var response = slackClient->listUserConversations(noOfItems = 10, types = "public_channel", user = userName);
+    var response = slackClient->listUserConversations(noOfItems = 10, types = "public_channel", user = slackUserName);
     if (response is error) {
         test:assertFail(msg = response.toString());
     }

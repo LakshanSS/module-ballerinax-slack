@@ -33,13 +33,13 @@ service /slack on slackListener {
         var event = check slackListener.getEventData(caller, request);
         if (event is MessageEvent) {
             msgReceived = true;
-            log:print("Message Event Triggered. Event Data : " + event.toString());
+            log:printInfo("Message Event Triggered. Event Data : " + event.toString());
         } else if (event is AppEvent) {
-            log:print("App Mention Event Triggered. Event Data : " + event.toString());
+            log:printInfo("App Mention Event Triggered. Event Data : " + event.toString());
         } else if (event is FileEvent) {
-            log:print("File Event Triggered. Event Data : " + event.toString());
+            log:printInfo("File Event Triggered. Event Data : " + event.toString());
         } else {
-            log:print("Slack Event Occured. Event Data : " + event.toString());
+            log:printInfo("Slack Event Occured. Event Data : " + event.toString());
         }
     }
 }

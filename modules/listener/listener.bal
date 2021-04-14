@@ -58,10 +58,10 @@ public class SlackEventListener {
         json request = check slackRequest.getJsonPayload();
         //calculation to identify the delay of event receiving from Slack
         int slackTimeStamp = check 'int:fromString(check slackRequest.getHeader(HEADER_TIMESTAMP));
-        int nowTimeStamp = check 'int:fromString(time:currentTime().time.toString().substring(0, 10));
+        int nowTimeStamp = check 'int:fromString(time:utcNow().toString().substring(0, 10));
         int timeDiff = nowTimeStamp - slackTimeStamp;
         //validate the request by comparing the token received with your app token and by checking whether the timestamp is withing 5 minutes (60 * 5 seconds) range
-        if (request.token == self.token && timeDiff < 60 * 5) {
+        if (request.token === self.token && timeDiff < 60 * 5) {
             string reqType = <string> check request.'type;
             if (reqType == URL_VERIFICATION) {
                 return self.verifyURL(caller, request);
@@ -82,7 +82,7 @@ public class SlackEventListener {
         response.statusCode = http:STATUS_OK;
         response.setPayload({challenge: <@untainted>validationRqst.challenge});
         check caller->respond(response);
-        log:print("Request URL Verified");
+        log:printInfo("Request URL Verified");
         return validationRqst;
     }
 
